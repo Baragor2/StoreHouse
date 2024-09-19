@@ -3,11 +3,11 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import settings
 
-DB_USER = settings.DB_USER
-DB_PASS = settings.DB_PASS
-DB_HOST = settings.DB_HOST
-DB_PORT = settings.DB_PORT
-DB_NAME = settings.DB_NAME
+DB_USER = settings.db.user
+DB_PASS = settings.db.password
+DB_HOST = settings.db.host
+DB_PORT = settings.db.port
+DB_NAME = settings.db.name
 
 
 DATABASE_URL = (
