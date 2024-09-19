@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import update
+from sqlalchemy import update, delete
 
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
