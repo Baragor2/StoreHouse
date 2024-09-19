@@ -42,3 +42,10 @@ async def update_product(
 ) -> dict[str, str]:
     await ProductsDAO.update_product(product_id, product)
     return {"message": "Product updated"}
+
+
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product(
+        product_id: UUID,
+) -> None:
+    await ProductsDAO.delete_product(product_id)
