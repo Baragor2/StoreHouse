@@ -10,6 +10,7 @@ from alembic import context
 from app.database import Base, DATABASE_URL
 from app.products.models import Products # noqa
 from app.orders.models import Orders # noqa
+from app.order_items.models import OrderItems # noqa
 
 sys.path.insert(0, dirname(dirname(dirname(abspath(__file__)))))
 
