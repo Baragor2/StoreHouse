@@ -12,3 +12,10 @@ class SProduct(BaseModel):
     description: str
     price: Annotated[Decimal, Gt(0)]
     available: PositiveInt
+
+
+class SProductWithoutId(BaseModel):
+    title: str
+    description: str
+    price: Annotated[Decimal, Gt(0)]
+    available: PositiveInt
