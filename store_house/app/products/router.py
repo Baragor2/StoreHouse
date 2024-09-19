@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, status
+from pydantic import PositiveInt
 
 from app.products.dao import ProductsDAO
 from app.products.schemas import SProduct, SProductWithoutId
@@ -32,3 +33,12 @@ async def create_product(
         **dict(product)
     )
     return {"message": "Product created"}
+
+
+@router.put("/{product_id}")
+async def update_product(
+        product_id: UUID,
+        product: SProductWithoutId,
+) -> dict[str, str]:
+    await ProductsDAO.update_product(product_id, product)
+    return {"message": "Product updated"}
