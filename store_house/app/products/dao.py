@@ -1,10 +1,11 @@
 from uuid import UUID
 
+from pydantic import PositiveInt
 from sqlalchemy import update, delete
 
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
-from app.exceptions import NoSuchProductException
+from app.exceptions import NoSuchProductException, NotEnoughProductsException
 from app.products.models import Products
 from app.products.schemas import SProductWithoutId, SProduct
 
@@ -45,3 +46,32 @@ class ProductsDAO(BaseDAO):
 
             await session.execute(delete_product_stmt)
             await session.commit()
+
+    @classmethod
+    async def check_enough_products(
+            cls,
+            product_id: UUID,
+            product_count: PositiveInt
+    ) -> None:
+        product = await cls.get_product(product_id)
+        if product.available < product_count:
+            NotEnoughProductsException.detail = f'Недостаточно "{product.title}" на складе'
+            raise NotEnoughProductsException
+
+    @classmethod
+    async def change_available_quantity(
+            cls,
+            product_id: UUID,
+            product_count: PositiveInt
+    ) -> None:
+        product = await cls.get_product(product_id)
+
+        async with async_session_maker() as session:
+            update_product__available_stmt = (
+                update(Products)
+                .where(Products.id == product_id)
+                .values(available=product.available - product_count)
+            )
+
+        await session.execute(update_product__available_stmt)
+        await session.commit()
