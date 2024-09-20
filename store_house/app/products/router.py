@@ -1,7 +1,6 @@
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, status
-from pydantic import PositiveInt
 
 from app.products.dao import ProductsDAO
 from app.products.schemas import SProduct, SProductWithoutId
