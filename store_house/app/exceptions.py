@@ -12,3 +12,7 @@ class StoreHouseException(HTTPException):
 class NoSuchProductException(StoreHouseException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = "Такого продукта не существует"
+
+
+class NotEnoughProductsException(StoreHouseException):
+    status_code = status.HTTP_400_BAD_REQUEST
