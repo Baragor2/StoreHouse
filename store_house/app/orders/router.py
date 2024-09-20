@@ -1,7 +1,10 @@
+from uuid import UUID
+
 from fastapi import APIRouter, status
 
 from app.order_items.schemas import SOrderItemWithoutOrderId
 from app.orders.dao import OrdersDAO
+from app.orders.schemas import SOrder
 
 router = APIRouter(
     prefix="/orders",
@@ -15,3 +18,13 @@ async def create_order(order_items: list[SOrderItemWithoutOrderId]) -> dict[str,
     return {"message": "Order created successfully"}
 
 
+@router.get("/")
+async def get_orders() -> list[SOrder]:
+    orders: list[SOrder] = await OrdersDAO.find_all()
+    return orders
+
+
+@router.get("/{order_id}")
+async def get_order(order_id: UUID) -> SOrder:
+    order: SOrder = await OrdersDAO.get_order(order_id)
+    return order
