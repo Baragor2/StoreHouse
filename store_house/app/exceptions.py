@@ -16,3 +16,8 @@ class NoSuchProductException(StoreHouseException):
 
 class NotEnoughProductsException(StoreHouseException):
     status_code = status.HTTP_400_BAD_REQUEST
+
+
+class NoSuchOrderException(StoreHouseException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = "Такого заказа не существует"
