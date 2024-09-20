@@ -2,7 +2,7 @@ from uuid import UUID
 
 from app.dao.base import BaseDAO
 from app.order_items.models import OrderItems
-from app.order_items.schemas import SOrderItem, SOrderItemWithoutOrderId
+from app.order_items.schemas import SOrderItemWithoutOrderId
 from app.products.dao import ProductsDAO
 
 
