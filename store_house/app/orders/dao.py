@@ -1,13 +1,15 @@
 from datetime import datetime, UTC
 from uuid import uuid4, UUID
 
+from sqlalchemy import update
+
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
 from app.exceptions import NoSuchOrderException
 from app.order_items.dao import OrderItemsDAO
 from app.order_items.schemas import SOrderItemWithoutOrderId
 from app.orders.models import Orders
-from app.orders.schemas import SOrder
+from app.orders.schemas import SOrder, Status
 
 
 class OrdersDAO(BaseDAO):
@@ -32,3 +34,17 @@ class OrdersDAO(BaseDAO):
         if not order:
             raise NoSuchOrderException
         return order
+
+    @classmethod
+    async def update_order_status(cls, order_id: UUID, new_status: Status) -> None:
+        await OrdersDAO.get_order(order_id)
+
+        async with async_session_maker() as session:
+            update_product__available_stmt = (
+                update(Orders)
+                .where(Orders.id == order_id)
+                .values(status=new_status)
+            )
+
+        await session.execute(update_product__available_stmt)
+        await session.commit()
