@@ -4,7 +4,7 @@ from fastapi import APIRouter, status
 
 from app.order_items.schemas import SOrderItemWithoutOrderId
 from app.orders.dao import OrdersDAO
-from app.orders.schemas import SOrder
+from app.orders.schemas import SOrder, Status
 
 router = APIRouter(
     prefix="/orders",
@@ -28,3 +28,9 @@ async def get_orders() -> list[SOrder]:
 async def get_order(order_id: UUID) -> SOrder:
     order: SOrder = await OrdersDAO.get_order(order_id)
     return order
+
+
+@router.patch("/{order_id}/status")
+async def update_order_status(order_id: UUID, new_status: Status) -> dict[str, str]:
+    await OrdersDAO.update_order_status(order_id, new_status)
+    return {"message": "Order status updated successfully"}
