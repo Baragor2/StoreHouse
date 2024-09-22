@@ -25,7 +25,7 @@ services:
   storehouse:
     image: storehouse_app
     build:
-      context: app/.
+      context: store_house/.
     container_name: storehouse_app
     env_file:
       - .env
