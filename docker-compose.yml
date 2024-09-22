@@ -19,6 +19,8 @@ services:
     container_name: booking_db
     env_file:
       - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - dev
 
@@ -36,3 +38,6 @@ services:
       - 7777:8000
     networks:
       - dev
+
+volumes:
+  postgres_data:
