@@ -2,7 +2,7 @@ import json
 from datetime import datetime
 
 import pytest
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy import insert
 
 from app.config import settings
@@ -14,7 +14,7 @@ from app.orders.models import Orders
 from app.products.models import Products
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 async def prepare_database():
     assert settings.mode.mode == "TEST"
 
@@ -47,5 +47,5 @@ async def prepare_database():
 
 @pytest.fixture(scope="function")
 async def ac():
-    async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         yield ac
