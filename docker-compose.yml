@@ -11,6 +11,7 @@ services:
       - './store_house/nginx.conf:/etc/nginx/nginx.conf'
     depends_on:
       - storehouse
+      - db
     networks:
       - dev
 
