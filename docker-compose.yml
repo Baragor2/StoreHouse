@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+    depends_on:
+      - storehouse
+    networks:
+      - dev
+
+  db:
+    image: postgres:15
+    container_name: booking_db
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+    networks:
+      - dev
+
+  storehouse:
+    image: storehouse_app
+    build:
+      context: .
+    container_name: storehouse_app
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: sh -c "alembic upgrade head && gunicorn app.main:app --workers 1 --worker-class uvicorn.workers.UvicornWorker --bind=0.0.0.0:8000"
+    ports:
+      - 7777:8000
+    networks:
+      - dev
+
