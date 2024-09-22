@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -15,6 +17,18 @@ class DatabaseConfig(BaseModel):
     name: str
 
 
+class TestDatabaseConfig(BaseModel):
+    user: str
+    password: str
+    host: str
+    port: int
+    name: str
+
+
+class ModeConfig(BaseModel):
+    mode: Literal["DEV", "TEST", "PROD"]
+
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -25,6 +39,8 @@ class Settings(BaseSettings):
 
     run: RunConfig = RunConfig()
     db: DatabaseConfig
+    testdb: TestDatabaseConfig
+    mode: ModeConfig
 
 
 settings = Settings()
