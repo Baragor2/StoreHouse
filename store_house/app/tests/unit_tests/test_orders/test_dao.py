@@ -2,6 +2,7 @@ from uuid import UUID
 
 import pytest
 
+from app.database import async_session_maker
 from app.exceptions import NoSuchOrderException
 from app.orders.dao import OrdersDAO
 from app.orders.schemas import Status
@@ -16,8 +17,9 @@ async def test_find_order_by_id(
         order_id: UUID,
         is_order_present: bool,
 ) -> None:
-    order = await OrdersDAO.find_one_or_none(id=order_id)
-
+    async with async_session_maker() as session:
+        order = await OrdersDAO.find_one_or_none(session, id=order_id)
+        await session.commit()
     if is_order_present:
         assert order
     else:
@@ -36,8 +38,10 @@ async def test_update_order_status(
         is_order_present: bool,
 ) -> None:
     try:
-        await OrdersDAO.update_order_status(order_id, new_status)
-        product = await OrdersDAO.get_order(order_id)
-        assert product.status == new_status
+        async with async_session_maker() as session:
+            await OrdersDAO.update_order_status(session, order_id, new_status)
+            product = await OrdersDAO.get_order(session, order_id)
+            assert product.status == new_status
+            await session.commit()
     except NoSuchOrderException:
         assert not is_order_present

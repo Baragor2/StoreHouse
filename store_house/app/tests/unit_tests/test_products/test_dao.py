@@ -3,6 +3,7 @@ from uuid import UUID
 import pytest
 from pydantic import PositiveInt
 
+from app.database import async_session_maker
 from app.exceptions import NoSuchProductException, NotEnoughProductsException
 from app.products.dao import ProductsDAO
 
@@ -17,7 +18,9 @@ async def test_find_product_by_id(
         product_title: str,
         is_product_present: bool,
 ) -> None:
-    product = await ProductsDAO.find_one_or_none(id=product_id)
+    async with async_session_maker() as session:
+        product = await ProductsDAO.find_one_or_none(session, id=product_id)
+        await session.commit()
 
     if is_product_present:
         assert product
@@ -34,10 +37,12 @@ async def test_find_product_by_id(
 ])
 async def test_delete_product(product_id: UUID, is_product_present: bool) -> None:
     try:
-        await ProductsDAO.delete_product(product_id)
+        async with async_session_maker() as session:
+            await ProductsDAO.delete_product(session, product_id)
 
-        product = await ProductsDAO.find_one_or_none(id=product_id)
-        assert not product
+            product = await ProductsDAO.find_one_or_none(session, id=product_id)
+            assert not product
+            await session.commit()
     except NoSuchProductException:
         assert not is_product_present
 
@@ -53,8 +58,10 @@ async def test_check_enough_products(
         is_enough_products: bool,
 ) -> None:
     try:
-        await ProductsDAO.check_enough_products(product_id, product_count)
-        assert is_enough_products
+        async with async_session_maker() as session:
+            await ProductsDAO.check_enough_products(session, product_id, product_count)
+            assert is_enough_products
+            await session.commit()
     except NotEnoughProductsException:
         assert not is_enough_products
 
@@ -69,6 +76,8 @@ async def test_change_available_quantity(
         product_count: PositiveInt,
         expected_product_count: PositiveInt,
 ) -> None:
-    await ProductsDAO.change_available_quantity(product_id, product_count)
-    product = await ProductsDAO.get_product(product_id)
+    async with async_session_maker() as session:
+        await ProductsDAO.change_available_quantity(session, product_id, product_count)
+        product = await ProductsDAO.get_product(session, product_id)
+        await session.commit()
     assert product.available == expected_product_count

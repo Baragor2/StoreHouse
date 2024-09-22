@@ -2,6 +2,7 @@ from uuid import UUID, uuid4
 
 from fastapi import APIRouter, status
 
+from app.database import async_session_maker
 from app.products.dao import ProductsDAO
 from app.products.schemas import SProduct, SProductWithoutId
 
@@ -13,13 +14,17 @@ router = APIRouter(
 
 @router.get("/")
 async def get_products() -> list[SProduct]:
-    products = await ProductsDAO.find_all()
+    async with async_session_maker() as session:
+        products = await ProductsDAO.find_all(session)
+        session.commit()
     return products
 
 
 @router.get("/{product_id}")
 async def get_product(product_id: UUID) -> SProduct:
-    product = await ProductsDAO.find_one_or_none(id=product_id)
+    async with async_session_maker() as session:
+        product = await ProductsDAO.find_one_or_none(session, id=product_id)
+        session.commit()
     return product
 
 
@@ -27,10 +32,13 @@ async def get_product(product_id: UUID) -> SProduct:
 async def create_product(
         product: SProductWithoutId,
 ) -> dict[str, str]:
-    await ProductsDAO.add(
-        id=uuid4(),
-        **dict(product)
-    )
+    async with async_session_maker() as session:
+        await ProductsDAO.add(
+            session,
+            id=uuid4(),
+            **dict(product)
+        )
+        session.commit()
     return {"message": "Product created"}
 
 
@@ -39,7 +47,9 @@ async def update_product(
         product_id: UUID,
         product: SProductWithoutId,
 ) -> dict[str, str]:
-    await ProductsDAO.update_product(product_id, product)
+    async with async_session_maker() as session:
+        await ProductsDAO.update_product(session, product_id, product)
+        session.commit()
     return {"message": "Product updated"}
 
 
@@ -47,4 +57,6 @@ async def update_product(
 async def delete_product(
         product_id: UUID,
 ) -> None:
-    await ProductsDAO.delete_product(product_id)
+    async with async_session_maker() as session:
+        await ProductsDAO.delete_product(session, product_id)
+        session.commit()

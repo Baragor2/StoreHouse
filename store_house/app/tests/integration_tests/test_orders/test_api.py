@@ -2,6 +2,7 @@ import pytest
 from httpx import AsyncClient
 from pydantic import PositiveInt
 
+from app.database import async_session_maker
 from app.order_items.dao import OrderItemsDAO
 from app.orders.dao import OrdersDAO
 from app.products.dao import ProductsDAO
@@ -38,8 +39,8 @@ from app.products.schemas import SProduct
             },
         ],
         [15, 3],
+        3,
         4,
-        6,
         400,
     ),
 ])
@@ -55,16 +56,16 @@ async def test_create_order(
         f"/orders/",
         json=order_items_list
     )
+    async with async_session_maker() as session:
+        orders_count = len(await OrdersDAO.find_all(session))
+        assert orders_count == expected_orders_count
 
-    orders_count = len(await OrdersDAO.find_all())
-    assert orders_count == expected_orders_count
+        order_items_count = len(await OrderItemsDAO.find_all(session))
+        assert order_items_count == expected_order_items_count
 
-    order_items_count = len(await OrderItemsDAO.find_all())
-    assert order_items_count == expected_order_items_count
+        for ind, order_item in enumerate(order_items_list):
+            product: SProduct = await ProductsDAO.find_one_or_none(session, id=order_item.get("product_id"))
+            assert product.available == expected_products_count[ind]
 
-    for ind, order_item in enumerate(order_items_list):
-        product: SProduct = await ProductsDAO.find_one_or_none(id=order_item.get("product_id"))
-        assert product.available == expected_products_count[ind]
-
-    assert response.status_code == status_code
-        
+        assert response.status_code == status_code
+        await session.commit()
