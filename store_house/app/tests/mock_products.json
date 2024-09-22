@@ -1,0 +1,72 @@
+[
+    {
+        "id": "bde7bbfc-5a12-4e3c-ab7d-ea02bdc46560",
+        "title": "Стул",
+        "description": "Прочный стул",
+        "price": 999,
+        "available": 10
+    },
+    {
+        "id": "25d69dda-fb13-44b5-8f4b-c41a7292cb39",
+        "title": "Стол",
+        "description": "Деревянный стол",
+        "price": 4999,
+        "available": 5
+    },
+    {
+        "id": "c566bb72-9d21-4702-a3cc-3eec6c86f200",
+        "title": "Кресло",
+        "description": "Удобное кресло",
+        "price": 2999,
+        "available": 8
+    },
+    {
+        "id": "8860bb15-cd0e-4dcf-b5ee-926e1d5395f2",
+        "title": "Диван",
+        "description": "Большой диван",
+        "price": 9999,
+        "available": 2
+    },
+    {
+        "id": "9d5185a0-4ebd-4a42-8852-c44671bf3368",
+        "title": "Кровать",
+        "description": "Двуспальная кровать",
+        "price": 7999,
+        "available": 4
+    },
+    {
+        "id": "e5a52008-66fa-4212-921e-727c4aac680d",
+        "title": "Полка",
+        "description": "Металлическая полка",
+        "price": 1999,
+        "available": 15
+    },
+    {
+        "id": "e00c1ca7-ce4a-4bc2-a4cb-b2e2003abb05",
+        "title": "Шкаф",
+        "description": "Большой шкаф",
+        "price": 5999,
+        "available": 3
+    },
+    {
+        "id": "e7669593-2ca0-407e-b0c2-cd9bf5397047",
+        "title": "Лампа",
+        "description": "Настольная лампа",
+        "price": 499,
+        "available": 20
+    },
+    {
+        "id": "6e67bd30-3d3a-42dd-a764-71a2d91649e6",
+        "title": "Ковер",
+        "description": "Ковер ручной работы",
+        "price": 3999,
+        "available": 6
+    },
+    {
+        "id": "f7e81570-45f8-4cfa-a68d-ae637c87c3c0",
+        "title": "Зеркало",
+        "description": "Большое настенное зеркало",
+        "price": 1299,
+        "available": 7
+    }
+]
