@@ -70,7 +70,7 @@ class ProductsDAO(BaseDAO):
             update_product__available_stmt = (
                 update(Products)
                 .where(Products.id == product_id)
-                .values(available=product.available - product_count)
+                .values(available=product.available - product_count if product.available - product_count >= 0 else 0)
             )
 
         await session.execute(update_product__available_stmt)
