@@ -18,9 +18,9 @@ services:
     image: postgres:15
     container_name: booking_db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: dbname
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: store_house_db
     ports:
       - "5432:5432"
     volumes:
