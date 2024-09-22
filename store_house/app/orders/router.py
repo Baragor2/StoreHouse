@@ -25,7 +25,7 @@ async def create_order(order_items: list[SOrderItemWithoutOrderId]) -> dict[str,
 async def get_orders() -> list[SOrder]:
     async with async_session_maker() as session:
         orders: list[SOrder] = await OrdersDAO.find_all(session)
-        session.commit()
+        await session.commit()
     return orders
 
 
@@ -33,7 +33,7 @@ async def get_orders() -> list[SOrder]:
 async def get_order(order_id: UUID) -> SOrder:
     async with async_session_maker() as session:
         order: SOrder = await OrdersDAO.get_order(session, order_id)
-        session.commit()
+        await session.commit()
     return order
 
 
@@ -41,5 +41,5 @@ async def get_order(order_id: UUID) -> SOrder:
 async def update_order_status(order_id: UUID, new_status: Status) -> dict[str, str]:
     async with async_session_maker() as session:
         await OrdersDAO.update_order_status(session, order_id, new_status)
-        session.commit()
+        await session.commit()
     return {"message": "Order status updated successfully"}

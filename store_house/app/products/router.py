@@ -16,7 +16,7 @@ router = APIRouter(
 async def get_products() -> list[SProduct]:
     async with async_session_maker() as session:
         products = await ProductsDAO.find_all(session)
-        session.commit()
+        await session.commit()
     return products
 
 
@@ -24,7 +24,7 @@ async def get_products() -> list[SProduct]:
 async def get_product(product_id: UUID) -> SProduct:
     async with async_session_maker() as session:
         product = await ProductsDAO.find_one_or_none(session, id=product_id)
-        session.commit()
+        await session.commit()
     return product
 
 
@@ -49,7 +49,7 @@ async def update_product(
 ) -> dict[str, str]:
     async with async_session_maker() as session:
         await ProductsDAO.update_product(session, product_id, product)
-        session.commit()
+        await session.commit()
     return {"message": "Product updated"}
 
 
@@ -59,4 +59,4 @@ async def delete_product(
 ) -> None:
     async with async_session_maker() as session:
         await ProductsDAO.delete_product(session, product_id)
-        session.commit()
+        await session.commit()
